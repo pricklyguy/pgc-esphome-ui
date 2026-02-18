@@ -1,7 +1,8 @@
 (() => {
   // Load the official ESPHome v3 UI, then apply Prickly branding safely.
-  // Official v3 bundle is here (commonly referenced in ESPHome issues/docs): https://oi.esphome.io/v3/www.js
-  const V3_BUNDLE = "https://pricklyguy.github.io/pgc-esphome-ui/www.v3.js";
+  const BASE = "https://pricklyguy.github.io/pgc-esphome-ui/";
+  const V3_BUNDLE = BASE + "www.v3.js";
+  const LOGO_URL  = BASE + "pgc_logo.png";
 
   function addFooter() {
     if (document.getElementById("pgc-footer")) return;
@@ -16,7 +17,6 @@
   }
 
   function addLogo() {
-    // Try a few selectors because the v3 header structure can vary by build.
     const selectors = [
       "header",
       ".header",
@@ -44,7 +44,7 @@
 
       const img = document.createElement("img");
       img.id = "pgc-logo";
-      img.src = "/local/esphome/pgc_logo.png";
+      img.src = LOGO_URL;
       img.alt = "Prickly Guy Creations";
       img.style.cssText = `
         width: 38px; height: 38px;
@@ -57,7 +57,6 @@
         flex: 0 0 auto;
       `;
 
-      // Make sure header can accept a left badge cleanly
       try {
         header.style.display = header.style.display || "flex";
         header.style.alignItems = header.style.alignItems || "center";
@@ -77,14 +76,12 @@
     }
   }
 
-  // Load the official v3 UI bundle first (so we don't replace it)
   const s = document.createElement("script");
   s.src = V3_BUNDLE;
   s.defer = true;
   s.onload = patchAfterUiLoads;
   s.onerror = () => {
     console.warn("Failed to load ESPHome v3 UI bundle:", V3_BUNDLE);
-    // Still try to show footer/logo in case UI partially loads
     patchAfterUiLoads();
   };
   document.head.appendChild(s);
