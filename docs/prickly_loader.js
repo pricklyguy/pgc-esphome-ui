@@ -29,7 +29,7 @@ function addLogo() {
   img.src = LOGO_URL;
   img.alt = "Prickly Guy Creations";
   img.style.cssText = `
-    width: 40px; height: 40px;
+    width: 60px; height: 60px;
     border-radius: 999px;
     display:block;
     box-shadow:
