@@ -45,8 +45,8 @@ function addLogo() {
 
   a.style.cssText = `
     position: fixed;
-    top: 14px;
-    left: 14px;
+    top: 10px;
+    left: 7px;
     z-index: 99999;
     padding: 6px;
     border-radius: 999px;
