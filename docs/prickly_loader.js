@@ -16,56 +16,47 @@
     document.body.appendChild(footer);
   }
 
-  function addLogo() {
-    const selectors = [
-      "header",
-      ".header",
-      ".app-header",
-      ".mdc-top-app-bar",
-      "ha-top-app-bar",
-      "mwc-top-app-bar"
-    ];
+function addLogo() {
+  if (document.getElementById("pgc-logo")) return;
 
-    let tries = 0;
-    const t = setInterval(() => {
-      tries++;
-      if (document.getElementById("pgc-logo")) { clearInterval(t); return; }
+  const a = document.createElement("a");
+  a.href = "https://www.PricklyGuy.com";
+  a.target = "_blank";
+  a.rel = "noreferrer";
+  a.id = "pgc-logo";
 
-      let header = null;
-      for (const s of selectors) {
-        const el = document.querySelector(s);
-        if (el) { header = el; break; }
-      }
+  const img = document.createElement("img");
+  img.src = LOGO_URL;
+  img.alt = "Prickly Guy Creations";
+  img.style.cssText = `
+    width: 40px; height: 40px;
+    border-radius: 999px;
+    display:block;
+    box-shadow:
+      0 0 0 2px rgba(52,209,198,0.22),
+      0 0 16px rgba(52,209,198,0.35),
+      0 0 42px rgba(52,209,198,0.12);
+  `;
 
-      if (!header) {
-        if (tries > 40) clearInterval(t);
-        return;
-      }
+  // helpful if the logo URL is wrong / 404
+  img.onerror = () => console.warn("PGC logo failed to load:", LOGO_URL);
 
-      const img = document.createElement("img");
-      img.id = "pgc-logo";
-      img.src = LOGO_URL;
-      img.alt = "Prickly Guy Creations";
-      img.style.cssText = `
-        width: 38px; height: 38px;
-        border-radius: 999px;
-        margin-right: 10px;
-        box-shadow:
-          0 0 0 2px rgba(52,209,198,0.22),
-          0 0 16px rgba(52,209,198,0.35),
-          0 0 42px rgba(52,209,198,0.12);
-        flex: 0 0 auto;
-      `;
+  a.appendChild(img);
 
-      try {
-        header.style.display = header.style.display || "flex";
-        header.style.alignItems = header.style.alignItems || "center";
-      } catch (e) {}
+  a.style.cssText = `
+    position: fixed;
+    top: 14px;
+    left: 14px;
+    z-index: 99999;
+    padding: 6px;
+    border-radius: 999px;
+    background: rgba(7,10,15,0.35);
+    border: 1px solid rgba(52,209,198,0.18);
+    backdrop-filter: blur(8px);
+  `;
 
-      header.insertBefore(img, header.firstChild);
-      clearInterval(t);
-    }, 250);
-  }
+  document.body.appendChild(a);
+}
 
   function groupScheduleSlots() {
     // Best effort: find entity rows by looking for visible text like "Slot 1".
