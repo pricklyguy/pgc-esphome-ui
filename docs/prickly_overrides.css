@@ -1,1 +1,79 @@
-git placeholder
+/* Prickly Guy Creations - ESPHome Web Server v3 Overrides */
+
+:root{
+  --pg-bg0: #070a0f;
+  --pg-bg1: #0b121a;
+  --pg-card: rgba(12, 18, 26, 0.78);
+  --pg-border: rgba(52, 209, 198, 0.16);
+  --pg-accent: #34d1c6;
+  --pg-text: #e8f1ff;
+  --pg-muted: rgba(232,241,255,0.70);
+}
+
+/* Background + text */
+html, body{
+  background:
+    radial-gradient(1200px 600px at 20% 0%, rgba(52,209,198,0.12), transparent 60%),
+    radial-gradient(900px 500px at 95% 20%, rgba(52,209,198,0.08), transparent 55%),
+    linear-gradient(135deg, var(--pg-bg0), var(--pg-bg1)) !important;
+  color: var(--pg-text) !important;
+}
+
+/* Make room for footer */
+body{ padding-bottom: 52px !important; }
+
+/* Panels/cards (try multiple selectors because v3 markup can vary) */
+ha-card, .card, .entity, .entities, .content, .container > div{
+  background: var(--pg-card) !important;
+  border: 1px solid var(--pg-border) !important;
+  border-radius: 16px !important;
+  box-shadow: 0 14px 40px rgba(0,0,0,0.45) !important;
+  backdrop-filter: blur(10px);
+}
+
+/* Inputs + focus glow */
+input, select, textarea, button{
+  accent-color: var(--pg-accent);
+}
+input:focus, select:focus, textarea:focus, button:focus{
+  outline: none !important;
+  box-shadow:
+    0 0 0 2px rgba(52,209,198,0.25),
+    0 0 18px rgba(52,209,198,0.28) !important;
+}
+
+/* Make group headers feel nicer */
+h2, h3, .group-title, .header, .subheader{
+  color: var(--pg-text) !important;
+  letter-spacing: 0.2px;
+}
+
+/* Slightly tighten entity rows so schedules feel less “spreadsheet-y” */
+.entity, .row, .item, .control{
+  margin: 8px 0 !important;
+}
+
+/* Footer div (created by JS) */
+#pgc-footer{
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  z-index: 9999;
+  padding: 10px 14px;
+  font-size: 12px;
+  color: var(--pg-muted);
+  background: rgba(7,10,15,0.88);
+  border-top: 1px solid rgba(52,209,198,0.20);
+  backdrop-filter: blur(10px);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+}
+#pgc-footer a{
+  color: var(--pg-accent);
+  text-decoration:none;
+  font-weight:700;
+}
+#pgc-footer a:hover{
+  text-shadow: 0 0 12px rgba(52,209,198,0.60);
+}
