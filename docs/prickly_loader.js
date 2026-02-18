@@ -1,7 +1,7 @@
 (() => {
   // Load the official ESPHome v3 UI, then apply Prickly branding safely.
   // Official v3 bundle is here (commonly referenced in ESPHome issues/docs): https://oi.esphome.io/v3/www.js
-  const V3_BUNDLE = "https://oi.esphome.io/v3/www.js";
+  const V3_BUNDLE = "https://pricklyguy.github.io/pgc-esphome-ui/www.v3.js";
 
   function addFooter() {
     if (document.getElementById("pgc-footer")) return;
