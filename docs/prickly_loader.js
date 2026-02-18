@@ -67,15 +67,98 @@
     }, 250);
   }
 
-  function patchAfterUiLoads() {
-    const run = () => { addLogo(); addFooter(); };
-    if (document.readyState === "loading") {
-      document.addEventListener("DOMContentLoaded", run);
-    } else {
-      run();
-    }
+  function groupScheduleSlots() {
+    // Best effort: find entity rows by looking for visible text like "Slot 1".
+    // This needs to run AFTER v3 UI renders entities, so we call it repeatedly.
+    const root = document.querySelector("main") || document.body;
+    if (!root) return;
+
+    // If already grouped, skip
+    if (document.querySelector(".pgc-schedule-wrap")) return;
+
+    // Find likely "row" elements that contain Slot 1-4 text.
+    const candidates = Array.from(root.querySelectorAll("*"))
+      .filter(el => el.children && el.children.length > 0)
+      .filter(el => /Slot\s+[1-4]/i.test(el.textContent || ""));
+
+    // Choose smaller nodes to avoid wrapping huge parents
+    const rows = candidates.filter(el => {
+      const t = (el.textContent || "").trim();
+      return t.length > 0 && t.length < 240 && /Slot\s+[1-4]/i.test(t);
+    });
+
+    // We expect: 4 enables + 12 numbers = 16 rows with "Slot X" in text.
+    // But allow lower if UI changes.
+    if (rows.length < 10) return;
+
+    const firstRow =
+      rows.find(r => /Slot\s+1/i.test(r.textContent || "")) || rows[0];
+    const parent = firstRow.parentElement;
+    if (!parent) return;
+
+    const wrap = document.createElement("div");
+    wrap.className = "pgc-schedule-wrap";
+
+    const makeCard = (slotNum) => {
+      const card = document.createElement("div");
+      card.className = "pgc-slot-card";
+      card.dataset.slot = String(slotNum);
+      card.innerHTML = `
+        <div class="pgc-slot-title">
+          <div>Schedule Slot ${slotNum}</div>
+          <div class="pgc-badge">Prickly Glow</div>
+        </div>
+        <div class="pgc-slot-divider"></div>
+      `;
+      return card;
+    };
+
+    const cards = {
+      1: makeCard(1),
+      2: makeCard(2),
+      3: makeCard(3),
+      4: makeCard(4),
+    };
+
+    rows.forEach(row => {
+      const txt = row.textContent || "";
+      const m = txt.match(/Slot\s+([1-4])/i);
+      if (!m) return;
+      const slot = Number(m[1]);
+      const card = cards[slot];
+      if (!card) return;
+      card.appendChild(row);
+    });
+
+    parent.insertBefore(wrap, firstRow);
+    wrap.appendChild(cards[1]);
+    wrap.appendChild(cards[2]);
+    wrap.appendChild(cards[3]);
+    wrap.appendChild(cards[4]);
   }
 
+  function patchAfterUiLoads() {
+    const runOnce = () => {
+      addLogo();
+      addFooter();
+      groupScheduleSlots();
+    };
+
+    // Run immediately
+    runOnce();
+
+    // Run a few more times as UI hydrates/renders entities
+    let tries = 0;
+    const rep = setInterval(() => {
+      tries++;
+      runOnce();
+      if (document.querySelector(".pgc-schedule-wrap") || tries > 25) {
+        clearInterval(rep);
+      }
+    }, 300);
+  }
+
+  // Load the v3 UI bundle first (so we don't replace it)
   const s = document.createElement("script");
   s.src = V3_BUNDLE;
   s.defer = true;
